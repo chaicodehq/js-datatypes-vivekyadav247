@@ -62,5 +62,32 @@
  *   // => { isValid: false, errors: { name: "...", email: "...", ... } }
  */
 export function validateForm(formData) {
-  // Your code here
+  const errors = {};
+  if (typeof formData.name !== 'string' || formData.name.trim().length < 2 || formData.name.trim().length > 50) {
+    errors.name = "Name must be 2-50 characters";
+  }
+  if (typeof formData.email !== 'string' || formData.email.indexOf("@") === -1 || formData.email.indexOf("@") !== formData.email.lastIndexOf("@") || formData.email.indexOf(".") <= formData.email.indexOf("@")) {
+    errors.email = "Invalid email format";
+  }
+  if (typeof formData.phone !== 'string' || formData.phone.length !== 10 || !/^[6-9]/.test(formData.phone) || !/^\d+$/.test(formData.phone)) {
+    errors.phone = "Invalid Indian phone number";
+  } 
+  const age = parseInt(formData.age);
+  if (isNaN(age) || !/^\d+$/.test(formData.age) || !Number.isInteger(age) || age < 16 || age > 100) {
+    errors.age = "Age must be an integer between 16 and 100";
+  }
+  if (typeof formData.pincode !== 'string' || formData.pincode.length !== 6 || formData.pincode.startsWith("0") || !/^\d+$/.test(formData.pincode)) {
+    errors.pincode = "Invalid Indian pincode";
+  }
+  const state = formData.state ?? "";
+  if (typeof state !== 'string' || state.trim() === "") {
+    errors.state = "State is required";
+  }
+  if (!Boolean(formData.agreeTerms)) {
+    errors.agreeTerms = "Must agree to terms";
+  }
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors: errors
+  };
 }
